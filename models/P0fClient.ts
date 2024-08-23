@@ -68,6 +68,11 @@ export  class P0fClient {
       client.on('error', (err) => {
         reject(err);
       });
+
+      client.on('end', () => {
+        reject(new Error('Socket connection ended.'));
+        // console.log(`>>END`)
+      });
     });
   }
 
