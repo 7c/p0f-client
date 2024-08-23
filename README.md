@@ -81,3 +81,9 @@ and the output should be something like this
 ## run tests
 npm run test
 ```
+
+## P0fManager
+this manager is designed for high performance queries with fault toleration (todo: caching)
+```typescript
+import { P0fManager } from "p0f-client"
+```
