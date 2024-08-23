@@ -3,7 +3,8 @@ import * as fs from 'fs';
 import { promiseTimeout } from '../inc/tools';
 import { P0fClient, tQueryResponse } from '../index';
 const dbg = debug('p0f-manager')
-dbg.enabled = true
+const isJestRunning = typeof jest !== 'undefined';
+dbg.enabled = isJestRunning
 
 export class P0fManager {
     client?: P0fClient = undefined

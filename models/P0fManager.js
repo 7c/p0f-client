@@ -32,7 +32,8 @@ const fs = __importStar(require("fs"));
 const tools_1 = require("../inc/tools");
 const index_1 = require("../index");
 const dbg = (0, debug_1.default)('p0f-manager');
-dbg.enabled = true;
+const isJestRunning = typeof jest !== 'undefined';
+dbg.enabled = isJestRunning;
 class P0fManager {
     constructor(socketPath = '/tmp/p0f.socket', socket_timeout = 2000) {
         this.socketPath = socketPath;

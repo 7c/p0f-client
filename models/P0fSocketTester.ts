@@ -2,7 +2,7 @@ import * as net from 'net';
 import * as fs from 'fs';
 import path from 'path';
 
-function loadTestData16(filename:string='testdata.16.json') { 
+function loadTestData16(filename: string = 'testdata.16.json') {
   const data = fs.readFileSync(path.join(__dirname, '../assets', filename), 'utf8');
   return data.split('\n').map((line: string) => {
     if (!line) return null;
@@ -11,7 +11,7 @@ function loadTestData16(filename:string='testdata.16.json') {
     if (j.status !== 16) return null;
     j.first_seen = new Date(j.first_seen);
     j.last_seen = new Date(j.last_seen);
-    return j
+    return j;
   });
 }
 
@@ -63,7 +63,7 @@ const randomResponses = {
 
 export class P0fSocketTester {
   private server: net.Server;
-  private mode: keyof typeof randomResponses;
+  private mode: keyof typeof randomResponses | 'timeout';
 
   constructor(private socketFile: string) {
     this.mode = 16; // Default mode to OK
@@ -72,7 +72,7 @@ export class P0fSocketTester {
     if (fs.existsSync(this.socketFile)) {
       fs.unlinkSync(this.socketFile); // Remove the existing socket file if it exists
     }
-    
+
     this.server.listen(this.socketFile, () => {
       console.log(`P0fSocketTester listening on ${this.socketFile}`);
     });
@@ -80,6 +80,10 @@ export class P0fSocketTester {
 
   private handleConnection(socket: net.Socket): void {
     socket.on('data', () => {
+      if (this.mode === 'timeout') {
+        // Do nothing, simulate a timeout by not responding
+        return;
+      }
       const response = this.getRandomResponse();
       const buffer = this.buildResponseBuffer(response);
       socket.write(buffer);
@@ -88,7 +92,7 @@ export class P0fSocketTester {
   }
 
   private getRandomResponse() {
-    const responses = randomResponses[this.mode];
+    const responses = randomResponses[this.mode as keyof typeof randomResponses];
     const randomIndex = Math.floor(Math.random() * responses.length);
     return responses[randomIndex];
   }
@@ -133,6 +137,10 @@ export class P0fSocketTester {
 
   randomBadQuery() {
     this.mode = 0;
+  }
+
+  modeTimeout() {
+    this.mode = 'timeout';
   }
 
   close() {

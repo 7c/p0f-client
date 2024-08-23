@@ -102,6 +102,10 @@ class P0fSocketTester {
     }
     handleConnection(socket) {
         socket.on('data', () => {
+            if (this.mode === 'timeout') {
+                // Do nothing, simulate a timeout by not responding
+                return;
+            }
             const response = this.getRandomResponse();
             const buffer = this.buildResponseBuffer(response);
             socket.write(buffer);
@@ -146,6 +150,9 @@ class P0fSocketTester {
     }
     randomBadQuery() {
         this.mode = 0;
+    }
+    modeTimeout() {
+        this.mode = 'timeout';
     }
     close() {
         this.server.close(() => {
