@@ -3,9 +3,9 @@ import * as fs from 'fs';
 import { isIPv4, isIPv6 } from 'net';
 
 export const enum StatusCode {
-  BadQuery = 0x00,
-  OK = 0x10,
-  NoMatch = 0x20
+  BadQuery = 0x00, // 0
+  OK = 0x10, // 16
+  NoMatch = 0x20 // 32
 }
 
 export type tQueryResponse = {
@@ -116,3 +116,4 @@ export class P0fClient {
     return unixTime ? new Date(unixTime * 1000) : null;
   }
 }
+
