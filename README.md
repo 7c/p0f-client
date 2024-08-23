@@ -28,7 +28,7 @@ npm i --save https://github.com/7c/p0f-client
 Assume you have started it with `-s` and `-o` flags you can use following code to find a random client from the logfile and query it with p0f
 
 ```typescript
-import { P0fClient } from "p0f-client"
+import { P0fClient,P0fLogfile } from "p0f-client"
 import { P0fLogfile } from 'p0f-client/models/P0fLogfile'
 
 const logs = new P0fLogfile('/tmp/p0f.log')
@@ -83,7 +83,26 @@ npm run test
 ```
 
 ## P0fManager
-this manager is designed for high performance queries with fault toleration (todo: caching)
+this manager is designed for high performance queries with fault toleration (todo: caching). Designed to never throw and detecting down times automatically.
 ```typescript
 import { P0fManager } from "p0f-client"
+// constructor
+// new P0fManager(socketFile: string, socket_timeout: number = 2000)
+
+// methods
+// async query(ip: string, query_timeout: number = 100): Promise<tQueryResponse | string>
+// public isReady(): boolean
+```
+
+## P0fSocketTester
+designed for testing the p0f socket, acts as mockup like random respond p0f compatible socket server, you can switch modes with `randomOK`, `randomNoMatch`, `randomBadQuery`, `modeTimeout` methods
+
+```typescript
+import { P0fSocketTester,P0fClient } from "p0f-client"
+
+const socketFile = '/tmp/p0f.socket'
+const mockSocketServer = new P0fSocketTester(socketFile)
+mockSocketServer.randomOK()
+const p0f = new P0fClient(socketFile)
+await p0f.query('1.2.3.4')
 ```
