@@ -28,8 +28,7 @@ npm i --save https://github.com/7c/p0f-client
 Assume you have started it with `-s` and `-o` flags you can use following code to find a random client from the logfile and query it with p0f
 
 ```typescript
-import { P0fClient,P0fLogfile } from "p0f-client"
-import { P0fLogfile } from 'p0f-client/models/P0fLogfile'
+import { P0fClient,P0fLogfile,P0fLogfile } from "p0f-client"
 
 const logs = new P0fLogfile('/tmp/p0f.log')
 const p0f = new P0fClient('/tmp/p0f.socket')

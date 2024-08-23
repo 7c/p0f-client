@@ -1,8 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
-const P0fLogfile_1 = require("./models/P0fLogfile");
-const logs = new P0fLogfile_1.P0fLogfile('/tmp/p0f.log');
+const logs = new index_1.P0fLogfile('/tmp/p0f.log');
 const p0f = new index_1.P0fClient('/tmp/p0f.socket');
 async function start() {
     try {
