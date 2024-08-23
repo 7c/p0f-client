@@ -13,8 +13,9 @@ const testSocketServer1File = '/tmp/p0ftest1.socket';
 const testSocketServer2File = '/tmp/p0ftest2.socket';
 const testSocketServer1 = new P0fSocketTester_1.P0fSocketTester(testSocketServer1File);
 const testSocketClient = new index_1.P0fClient(testSocketServer1File);
-beforeAll(() => {
+beforeAll(async () => {
     fs_1.default.writeFileSync(test_socket_file1, '');
+    await (0, tools_1.wait)(0.25);
 });
 describe('P0fManager with P0fSocketTester', () => {
     it('basic OK response', async () => {
@@ -56,6 +57,45 @@ describe('P0fManager with P0fSocketTester', () => {
         expect(await manager.query('1.2.3.4')).toBe('exception');
         expect(manager.isReady()).toBe(false);
         expect(await manager.query('1.2.3.4')).toBe('not-ready');
+        expect(manager.isReady()).toBe(false);
+    });
+    it('measuring timeouts and detection scenario1', async () => {
+        const testSocketServer3 = new P0fSocketTester_1.P0fSocketTester(testSocketServer2File);
+        testSocketServer3.randomOK();
+        const manager = new P0fManager_1.P0fManager(testSocketServer2File);
+        let started = Date.now();
+        // first query should be not-ready within <10ms
+        await manager.query('1.2.3.4', 100);
+        expect(Date.now() - started).toBeLessThan(10);
+        await manager.query('1.2.3.4', 100);
+        // second query should also be not-ready because Manager did not have time to recognize 'ready' state
+        expect(Date.now() - started).toBeLessThan(10);
+        // lets wait to give it time
+        await (0, tools_1.wait)(0.25);
+        // now it should be ready
+        expect(manager.isReady()).toBe(true);
+    });
+    it('measuring timeouts and detection scenario2', async () => {
+        const testSocketServer3 = new P0fSocketTester_1.P0fSocketTester(testSocketServer2File);
+        testSocketServer3.randomOK();
+        const manager = new P0fManager_1.P0fManager(testSocketServer2File);
+        // manager requires a query to detect ready state
+        await manager.query('1.2.3.4', 100);
+        await (0, tools_1.wait)(0.25);
+        expect(manager.isReady()).toBe(true);
+        // now we should be able to query very rapidly
+        for (let i = 0; i < 50; i++) {
+            let started = Date.now();
+            await manager.query('1.2.3.4', 100);
+            expect(Date.now() - started).toBeLessThan(50);
+        }
+    });
+    it('manager requires a query to detect ready-state', async () => {
+        const testSocketServer3 = new P0fSocketTester_1.P0fSocketTester(testSocketServer2File);
+        testSocketServer3.randomOK();
+        const manager = new P0fManager_1.P0fManager(testSocketServer2File);
+        // manager requires a query to detect ready state
+        await (0, tools_1.wait)(0.35);
         expect(manager.isReady()).toBe(false);
     });
 });
