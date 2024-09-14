@@ -1,7 +1,7 @@
 import { P0fClient,P0fLogfile } from './index'
 
 const logs = new P0fLogfile('/tmp/p0f.log')
-const p0f = new P0fClient('/tmp/p0f.socket')
+const p0f = new P0fClient('/var/run/p0f.socket')
 
 async function start() {
     try {

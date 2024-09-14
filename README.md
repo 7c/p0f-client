@@ -1,5 +1,5 @@
 ## p0f nodejs api client implementation
-Based on https://lcamtuf.coredump.cx/p0f3/README
+Based on https://lcamtuf.coredump.cx/p0f3/README but also supports https://github.com/7c/p0f-v3-api2 (patched version of p0f with api2 support)
 
 
 ## Some important comments from the original README
@@ -19,7 +19,7 @@ Based on https://lcamtuf.coredump.cx/p0f3/README
 ```bash
 npm i --save https://github.com/7c/p0f-client
 ```
-## Starting p0f with socket and logs(optional for testing)
+## Starting p0f with socket and logs(optional for testing only, otherwise it grows indefinitely)
 ```bash
 ./p0f -s /tmp/p0f.socket -o /tmp/p0f.log
 ```

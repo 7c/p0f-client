@@ -1,7 +1,7 @@
 {
-  "name": "p0f-client",
-  "version": "1.0.0",
-  "description": "p0f api client for NodeJS",
+  "name": "@7c/p0f-client",
+  "version": "1.1.1",
+  "description": "p0f v3 api client for NodeJS",
   "main": "index.js",
   "scripts": {
     "test": "jest",

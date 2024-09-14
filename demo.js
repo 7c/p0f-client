@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("./index");
 const logs = new index_1.P0fLogfile('/tmp/p0f.log');
-const p0f = new index_1.P0fClient('/tmp/p0f.socket');
+const p0f = new index_1.P0fClient('/var/run/p0f.socket');
 async function start() {
     try {
         console.log(`... opening logs`);

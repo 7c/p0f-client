@@ -73,24 +73,40 @@ class P0fClient {
     }
     parseResponse(data) {
         const status = data.readUInt32LE(4);
+        let version = data.readUInt8(8);
+        let last_mtu = -1;
+        let last_freq = -1;
+        let offset = 0;
+        if (version === 2) {
+            last_mtu = data.readUInt16LE(9);
+            last_freq = data.readDoubleLE(11);
+            offset = 1 + 2 + 8; // version2 of api response
+        }
+        else {
+            offset = 0;
+            version = 1; // original version
+        }
         const result = {
+            version,
             status,
-            first_seen: this.toDate(data.readUInt32LE(8)),
-            last_seen: this.toDate(data.readUInt32LE(12)),
-            total_conn: data.readUInt32LE(16),
-            uptime_min: data.readUInt32LE(20),
-            up_mod_days: data.readUInt32LE(24),
-            last_nat: data.readUInt32LE(28),
-            last_chg: data.readUInt32LE(32),
-            distance: data.readInt16LE(36),
-            bad_sw: data.readUInt8(38),
-            os_match_q: data.readUInt8(39),
-            os_name: data.toString('utf8', 40, 72).replace(/\0.*$/g, ''),
-            os_flavor: data.toString('utf8', 72, 104).replace(/\0.*$/g, ''),
-            http_name: data.toString('utf8', 104, 136).replace(/\0.*$/g, ''),
-            http_flavor: data.toString('utf8', 136, 168).replace(/\0.*$/g, ''),
-            link_type: data.toString('utf8', 168, 200).replace(/\0.*$/g, ''),
-            language: data.toString('utf8', 200, 232).replace(/\0.*$/g, '')
+            first_seen: this.toDate(data.readUInt32LE(offset + 8)),
+            last_seen: this.toDate(data.readUInt32LE(offset + 12)),
+            total_conn: data.readUInt32LE(offset + 16),
+            uptime_min: data.readUInt32LE(offset + 20),
+            up_mod_days: data.readUInt32LE(offset + 24),
+            last_nat: data.readUInt32LE(offset + 28),
+            last_chg: data.readUInt32LE(offset + 32),
+            distance: data.readInt16LE(offset + 36),
+            bad_sw: data.readUInt8(offset + 38),
+            os_match_q: data.readUInt8(offset + 39),
+            os_name: data.toString('utf8', offset + 40, 72).replace(/\0.*$/g, ''),
+            os_flavor: data.toString('utf8', offset + 72, 104).replace(/\0.*$/g, ''),
+            http_name: data.toString('utf8', offset + 104, 136).replace(/\0.*$/g, ''),
+            http_flavor: data.toString('utf8', offset + 136, 168).replace(/\0.*$/g, ''),
+            link_type: data.toString('utf8', offset + 168, 200).replace(/\0.*$/g, ''),
+            language: data.toString('utf8', offset + 200, 232).replace(/\0.*$/g, ''),
+            last_mtu,
+            last_freq
         };
         // if (result.status !== Status.OK) {
         //   throw new Error('p0f returned a status indicating an issue with the query.');
