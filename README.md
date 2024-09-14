@@ -21,7 +21,7 @@ npm i --save https://github.com/7c/p0f-client
 ```
 ## Starting p0f with socket and logs(optional for testing only, otherwise it grows indefinitely)
 ```bash
-./p0f -s /tmp/p0f.socket -o /tmp/p0f.log
+./p0f -s /var/run/p0f.socket -o /tmp/p0f.log
 ```
 
 ## Usage
@@ -31,7 +31,7 @@ Assume you have started it with `-s` and `-o` flags you can use following code t
 import { P0fClient,P0fLogfile } from "p0f-client"
 
 const logs = new P0fLogfile('/tmp/p0f.log')
-const p0f = new P0fClient('/tmp/p0f.socket')
+const p0f = new P0fClient('/var/run/p0f.socket')
 
 async function start() {
     try {
@@ -50,24 +50,28 @@ start()
 
 and the output should be something like this
 ```json
+// version2 output demonstration
 {
+  version: 2,
   status: 16,
-  first_seen: 2024-08-19T14:43:52.000Z,
-  last_seen: 2024-08-19T14:43:52.000Z,
-  total_conn: 1,
-  uptime_min: 0,
-  up_mod_days: 0,
-  last_nat: 0,
-  last_chg: 0,
-  distance: 12,
+  first_seen: 2024-08-14T15:15:17.000Z,
+  last_seen: 2024-08-14T15:15:32.000Z,
+  total_conn: 160,
+  uptime_min: 41423,
+  up_mod_days: 49,
+  last_nat: 1726326931,
+  last_chg: 1726326932,
+  distance: 0,
   bad_sw: 0,
   os_match_q: 2,
-  os_name: 'Windows',
-  os_flavor: 'NT kernel',
-  http_name: '',
-  http_flavor: '',
+  os_name: 'Linux',
+  os_flavor: '2.2.x-3.x',
+  http_name: 'nginx',
+  http_flavor: '0.x',
   link_type: 'Ethernet or modem',
-  language: ''
+  language: '',
+  last_mtu: 1500,
+  last_freq: 1000
 }
 ```
 
@@ -76,7 +80,7 @@ and the output should be something like this
 ```bash
 # optimized for linux
 ## start p0f with socket and logs
-./p0f -s /tmp/p0f.socket -o /tmp/p0f.log
+./p0f -s /var/run/p0f.socket -o /tmp/p0f.log
 ## run tests
 npm run test
 ```
@@ -99,7 +103,7 @@ designed for testing the p0f socket, acts as mockup like random respond p0f comp
 ```typescript
 import { P0fSocketTester,P0fClient } from "p0f-client"
 
-const socketFile = '/tmp/p0f.socket'
+const socketFile = '/var/run/p0f.socket'
 const mockSocketServer = new P0fSocketTester(socketFile)
 mockSocketServer.randomOK()
 const p0f = new P0fClient(socketFile)
