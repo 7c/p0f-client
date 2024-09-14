@@ -27,6 +27,6 @@ test -e package.json && {
 git commit -am "$1"
 
 
-git push -u origin main
+git push -u origin master
 git tag $NEW_VERSION
 git push origin $NEW_VERSION
