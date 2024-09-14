@@ -68,7 +68,7 @@ class P0fManager {
             const res = await (0, tools_1.promiseTimeout)(query_timeout, client.query(ip));
             this.is_ready = true;
             dbg(`do_query(${ip}): res: ${JSON.stringify(res)}`);
-            return res;
+            return res !== null && res !== void 0 ? res : null;
         }
         catch (err) {
             this.is_ready = false;

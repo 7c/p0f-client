@@ -45,7 +45,7 @@ export  class P0fClient {
     this.timeout = timeout;
   }
 
-  async query(ip: string): Promise<tQueryResponse> {
+  async query(ip: string): Promise<tQueryResponse | null> {
     if (!isIPv4(ip) && !isIPv6(ip)) {
       throw new Error('Invalid IP address.');
     }
@@ -61,6 +61,7 @@ export  class P0fClient {
       
       client.on('data', (data) => {
         const result = this.parseResponse(data);
+        if (result.status===StatusCode.NoMatch) return resolve(null) 
         resolve(result);
         client.end();
       });

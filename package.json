@@ -4,7 +4,7 @@
   "description": "p0f v3 api client for NodeJS",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
+    "test": "jest --forceExit --runInBand",
     "build": "tsc"
   },
   "author": "7c",

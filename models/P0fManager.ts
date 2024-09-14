@@ -35,13 +35,13 @@ export class P0fManager {
         }
     }
 
-    private async do_query(client: P0fClient, ip: string, query_timeout: number = 100): Promise<tQueryResponse | string> {
+    private async do_query(client: P0fClient, ip: string, query_timeout: number = 100): Promise<tQueryResponse | string | null> {
         try {
             dbg(`do_query(${ip})`)
             const res = await promiseTimeout(query_timeout, client.query(ip))
             this.is_ready = true
             dbg(`do_query(${ip}): res: ${JSON.stringify(res)}`)
-            return res
+            return res ?? null
         }
         catch (err) {
             this.is_ready = false
@@ -51,7 +51,7 @@ export class P0fManager {
         }
     }
 
-    async query(ip: string, query_timeout: number = 100): Promise<tQueryResponse | string> {
+    async query(ip: string, query_timeout: number = 100): Promise<tQueryResponse | string | null> {
         dbg('query()')
         const client = this.getClient()
         if (!client) {

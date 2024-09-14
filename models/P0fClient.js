@@ -47,6 +47,8 @@ class P0fClient {
             client.setTimeout(this.timeout);
             client.on('data', (data) => {
                 const result = this.parseResponse(data);
+                if (result.status === 32 /* StatusCode.NoMatch */)
+                    return resolve(null);
                 resolve(result);
                 client.end();
             });

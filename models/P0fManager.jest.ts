@@ -25,7 +25,7 @@ describe('P0fManager with P0fSocketTester', () => {
 
     it('basic NoMatch response', async () => {
         testSocketServer1.randomNoMatch()
-        expect(await testSocketClient.query('1.2.3.4')).toHaveProperty('status', 32)
+        expect(await testSocketClient.query('1.2.3.4')).toBeNull()
     })
 
     it('basic BadQuery response', async () => {
@@ -114,7 +114,7 @@ describe('P0fManager basics', () => {
         expect(() => new P0fManager([])).not.toThrow()
     })
 
-    it('isReady should responde false if file is not existing', () => {
+    it('isReady should respond false if file does not exist', () => {
         const manager = new P0fManager('no-file')
         expect(manager.isReady()).toBe(false)
     })
