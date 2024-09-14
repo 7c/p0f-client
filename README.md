@@ -93,7 +93,7 @@ import { P0fManager } from "@7c/p0f-client"
 // new P0fManager(socketFile: string, socket_timeout: number = 2000)
 
 // methods
-// async query(ip: string, query_timeout: number = 100): Promise<tQueryResponse | string>
+// async query(ip: string, query_timeout: number = 100): Promise<tQueryResponse | string | null>
 // public isReady(): boolean
 ```
 
