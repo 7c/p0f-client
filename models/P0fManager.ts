@@ -8,7 +8,8 @@ dbg.enabled = isJestRunning
 
 export class P0fManager {
     client?: P0fClient = undefined
-    is_ready: boolean = false
+    is_ready: boolean = true // better to assume it is ready, and check if it is not ready
+    last_errored_query: number = 0
 
     constructor(private readonly socketPath: string = '/tmp/p0f.socket', 
                 private readonly socket_timeout: number = 2000) {
@@ -45,6 +46,7 @@ export class P0fManager {
         }
         catch (err) {
             this.is_ready = false
+            this.last_errored_query = Date.now()
             dbg(`do_query(${ip}): error: ${err}`)
             if (err instanceof Error) return err.message
             return 'exception'
@@ -59,12 +61,12 @@ export class P0fManager {
             return 'no-socket-connection'
         }
 
-        if (!this.is_ready) {
+        if (!this.is_ready && Date.now() - this.last_errored_query < 1000) {
+            // we should not query too often, because it is likely to be not ready once it is not ready
             dbg('query(): not-ready')
-            // if not ready, try to reconnect but respond quickly, because we do not know when it will be ready
-            this.do_query(client, ip, 50).then((res) => { }).catch((err) => { })
             return 'not-ready'
         }
+
 
         dbg('query(): ready')
         return this.do_query(client, ip, query_timeout)

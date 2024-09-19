@@ -39,7 +39,8 @@ class P0fManager {
         this.socketPath = socketPath;
         this.socket_timeout = socket_timeout;
         this.client = undefined;
-        this.is_ready = false;
+        this.is_ready = true; // better to assume it is ready, and check if it is not ready
+        this.last_errored_query = 0;
         dbg(`INIT: socketPath: ${socketPath} socket_timeout: ${socket_timeout}`);
     }
     getClient() {
@@ -72,6 +73,7 @@ class P0fManager {
         }
         catch (err) {
             this.is_ready = false;
+            this.last_errored_query = Date.now();
             dbg(`do_query(${ip}): error: ${err}`);
             if (err instanceof Error)
                 return err.message;
@@ -85,10 +87,9 @@ class P0fManager {
             dbg('query(): no-socket-connection');
             return 'no-socket-connection';
         }
-        if (!this.is_ready) {
+        if (!this.is_ready && Date.now() - this.last_errored_query < 1000) {
+            // we should not query too often, because it is likely to be not ready once it is not ready
             dbg('query(): not-ready');
-            // if not ready, try to reconnect but respond quickly, because we do not know when it will be ready
-            this.do_query(client, ip, 50).then((res) => { }).catch((err) => { });
             return 'not-ready';
         }
         dbg('query(): ready');
